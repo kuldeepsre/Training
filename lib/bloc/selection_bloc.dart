@@ -24,7 +24,9 @@ class SelectionBloc {
   List<Item> getItems() {
     return _items;
   }
-
+  List<Item> getSelectedItems() {
+    return _items.where((item) => _selectedItems.value.contains(item.id)).toList();
+  }
   void dispose() {
     _selectedItems.close();
   }
