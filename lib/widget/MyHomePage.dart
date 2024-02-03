@@ -1,3 +1,4 @@
+import 'package:dreambiztech/ui/multiple_Selection_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -18,6 +19,16 @@ class MyHomePage extends StatelessWidget {
             .translate(LocalizationKeys.title)),
       ),
       body: HomeBody(),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => MultipleSelectionScreen()),
+          );
+        },
+        child: Icon(Icons.add),
+      ),
+
     );
   }
 }

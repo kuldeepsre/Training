@@ -1,0 +1,31 @@
+import 'package:dreambiztech/json_dummy_data/caliing_function.dart';
+import 'package:rxdart/rxdart.dart';
+
+class SelectionBloc {
+  final _selectedItems = BehaviorSubject<List<int>>.seeded([]);
+  final List<Item> _items;
+
+  SelectionBloc(this._items);
+
+  Stream<List<int>> get selectedItemsStream => _selectedItems.stream;
+
+  void toggleSelection(int itemId) {
+    List<int> selectedItems = _selectedItems.value ?? [];
+
+    if (selectedItems.contains(itemId)) {
+      selectedItems.remove(itemId);
+    } else {
+      selectedItems.add(itemId);
+    }
+
+    _selectedItems.add(selectedItems);
+  }
+
+  List<Item> getItems() {
+    return _items;
+  }
+
+  void dispose() {
+    _selectedItems.close();
+  }
+}
