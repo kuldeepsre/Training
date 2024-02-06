@@ -4,6 +4,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class MultipleSelectionScreen extends StatefulWidget {
+  const MultipleSelectionScreen({super.key});
+
   @override
   _MultipleSelectionScreenState createState() =>
       _MultipleSelectionScreenState();
