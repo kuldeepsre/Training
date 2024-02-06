@@ -7,7 +7,6 @@ import 'package:meta/meta.dart';
 part 'cart_item_event.dart';
 part 'cart_item_state.dart';
 
-
 class ShoppingCartBloc extends Bloc<CartItemEvent, CartItemState> {
   ShoppingCartBloc() : super(CartItemState([]));
 
