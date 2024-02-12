@@ -1,5 +1,5 @@
-import 'package:dreambiztech/ui/filter_screen.dart';
-import 'package:dreambiztech/ui/multiple_Selection_screen.dart';
+import 'package:dreambiztech/presentation/filter_screen.dart';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';

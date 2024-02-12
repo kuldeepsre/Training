@@ -1,9 +1,13 @@
 import 'dart:async';
+import 'dart:convert';
 
+import 'package:dreambiztech/Pojo/offline/Task.dart';
 import 'package:dreambiztech/Routes/route_generator.dart';
-import 'package:dreambiztech/bloc/selection_bloc.dart';
+import 'package:dreambiztech/bloc/cart/cart_bloc.dart';
+import 'package:dreambiztech/bloc/product_bloc.dart';
+import 'package:dreambiztech/bloc/task/task_bloc.dart';
 import 'package:dreambiztech/utils/Palette.dart';
-import 'package:dreambiztech/widget/MyHomePage.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -11,12 +15,19 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 
 import 'AppLocalizations.dart';
 import 'bloc/them/ThemeCubit.dart';
+import 'package:http/http.dart' as http;
+import 'package:hive/hive.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 
+Future<void> main() async {
+  await Hive.initFlutter();
+  await Hive.openBox<Task>('tasks');
+  Hive.registerAdapter(TaskAdapter());
 
-void main() {
+// Add this line
   runApp(const MyApp());
-
 }
+
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
@@ -26,7 +37,10 @@ class MyApp extends StatelessWidget {
       providers: [
         BlocProvider<ThemeCubit>(create: (context) => ThemeCubit()),
         BlocProvider<LanguageCubit>(create: (context) => LanguageCubit()),
-
+        BlocProvider(create: (context) => ProductBloc()..add(GetProductList())),
+        BlocProvider(create: (context) => TaskBloc()..add(LoadTasks())),
+        BlocProvider(
+            create: (context) => CartBloc()..add(LoadProductCounter())),
       ],
       child: BlocBuilder<ThemeCubit, ThemeState>(
         builder: (themeContext, themeState) {
@@ -48,7 +62,7 @@ class MyApp extends StatelessWidget {
                 initialRoute: '/',
                 onGenerateRoute: RouteGenerator.generateRoute,
                 debugShowCheckedModeBanner: false,
-               // home: MyHomePage(),
+                // home: MyHomePage(),
               );
             },
           );
@@ -56,10 +70,7 @@ class MyApp extends StatelessWidget {
       ),
     );
   }
-
 }
-
-
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({Key? key}) : super(key: key);
@@ -69,10 +80,31 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
+  Map<String, dynamic>? data;
+
   @override
   void initState() {
     super.initState();
+
     loadData();
+  }
+
+  // final String apiUrl = 'https://jsonplaceholder.typicode.com/posts/1';
+
+  final String apiUrl = 'http://127.0.0.1:5000/products';
+
+  Future<Map<String, dynamic>> fetchData() async {
+    final response = await http.get(Uri.parse(apiUrl));
+
+    if (response.statusCode == 200) {
+      // Parse the JSON response
+      Map<String, dynamic> data = json.decode(response.body);
+      print("Data ===${data}");
+      return data;
+    } else {
+      // Handle errors
+      throw Exception('Failed to load data');
+    }
   }
 
   Future<Timer> loadData() async {
@@ -80,7 +112,8 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   onDoneLoading() async {
-    Navigator.of(context).pushReplacementNamed('/home');
+ // Navigator.of(context).pushReplacementNamed('/home');
+  Navigator.of(context).pushReplacementNamed('/taskScreen');
   }
 
   @override
@@ -112,7 +145,7 @@ class _SplashScreenState extends State<SplashScreen> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
                     Text(
-                      "BLISS",
+                      "Welcome to Dreambiztech \n Software Technology }",
                       style: TextStyle(
                           color: Palette.white,
                           fontSize: 40,
@@ -122,14 +155,24 @@ class _SplashScreenState extends State<SplashScreen> {
                 ),
               ),
             ],
-          )
+          ),
+          // Center(
+          //   child: FutureBuilder<Map<String, dynamic>>(
+          //     future: fetchData(),
+          //     builder: (context, snapshot) {
+          //       if (snapshot.connectionState == ConnectionState.waiting) {
+          //         return CircularProgressIndicator();
+          //       } else if (snapshot.hasError) {
+          //         return Text('Error: ${snapshot.error}');
+          //       } else {
+          //         // Display the data received from the API
+          //         return Text('API Response: ${snapshot.data}');
+          //       }
+          //     },
+          //   ),
+          // ),
         ],
       ),
     );
   }
-
 }
-
-
-
-
