@@ -18,4 +18,6 @@ class Palette {
 
   static const Color textColor = Color(0xFF706f73);
   static const Color textColorLight = Colors.grey;
+  //you may define these in colors.dart file
+
 }
